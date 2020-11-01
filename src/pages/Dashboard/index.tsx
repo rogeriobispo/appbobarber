@@ -36,7 +36,6 @@ const Dashboard: React.FC = () => {
   const { navigate } = useNavigation();
   useEffect(() => {
     api.get('/providers').then(response => {
-      console.log(response.data);
       setProviders(response.data);
     });
   }, []);
@@ -47,7 +46,7 @@ const Dashboard: React.FC = () => {
 
   const navigateToCreateAppointment = useCallback(
     (providerId: string) => {
-      navigate('CreateAppointment', providerId);
+      navigate('CreateAppointment', { providerId });
     },
     [navigate],
   );
