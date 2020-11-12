@@ -44,6 +44,7 @@ const UserAvatar = styled.Image`
   height: 56px;
   border-radius: 28px;
   margin-left: auto;
+  background-color: white;
 `;
 
 const ProvidersList = styled(FlatList as new () => FlatList<Provider>)`
@@ -54,7 +55,7 @@ const ProvidersListContainer = styled.View`
   height: 112px;
 `;
 
-const ProviderContainer = styled(RectButton) <ProviderContainerProps>`
+const ProviderContainer = styled(RectButton)<ProviderContainerProps>`
   background: ${props => (props.selected ? '#ff9000' : '#3e3b47')};
   flex-direction: row;
   align-items: center;
@@ -114,29 +115,24 @@ const SectionContent = styled.ScrollView.attrs({
   contentContainerStyle: { paddingHorizontal: 24 },
   horizontal: true,
   showsHorizontalScrollIndicator: false,
-})`
+})``;
 
-
-`;
-
-const Hour = styled(RectButton) <HourProps>`
+const Hour = styled(RectButton)<HourProps>`
   padding: 12px;
-background: ${props => props.selected ? '#ff9000' : '#3e3b47'};
+  background: ${props => (props.selected ? '#ff9000' : '#3e3b47')};
   border-radius: 10px;
   margin-right: 8px;
 
-  opacity: ${(props) => (props.available ? 1 : 0.3)};
+  opacity: ${props => (props.available ? 1 : 0.3)};
 `;
 
 const HourText = styled.Text<HourTextProps>`
-  color: ${(props) => (props.selected ? '#232129' : '#f4ede8')};
+  color: ${props => (props.selected ? '#232129' : '#f4ede8')};
   font-family: 'RobotSlab-Regular';
   font-size: 16px;
 `;
 
-const Content = styled.ScrollView`
-
-`;
+const Content = styled.ScrollView``;
 
 const CreateAppointmentButton = styled(RectButton)`
   height: 50px;
@@ -176,5 +172,5 @@ export {
   HourText,
   Content,
   CreateAppointmentButton,
-  CreateAppointmentButtonText
+  CreateAppointmentButtonText,
 };

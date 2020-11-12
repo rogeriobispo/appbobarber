@@ -29,11 +29,13 @@ import { useAuth } from '../../hooks/Auth';
 interface FormFields {
   name: string;
   email: string;
+  old_password: string;
   password: string;
+  password_confirmation: string;
 }
 
 const SignUp: React.FC = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
   const formRef = useRef<FormHandles>(null);
   const emailImputRef = useRef<TextInput>(null);
@@ -51,25 +53,52 @@ const SignUp: React.FC = () => {
           email: Yup.string()
             .required('E-mail Obrigatório')
             .email('E-mail deve ser valido'),
-          password: Yup.string().min(6, 'no minimo 6 digitos'),
+          old_password: Yup.string(),
+          password: Yup.string().when('old_password', {
+            is: val => !!val.lenght,
+            then: Yup.string().required(),
+            otherwise: Yup.string(),
+          }),
+          password_confirmation: Yup.string()
+            .when('old_password', {
+              is: val => !!val.lenght,
+              then: Yup.string().required(),
+              otherwise: Yup.string(),
+            })
+            .oneOf([Yup.ref('password'), ''], 'Confirmação diferente'),
         });
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        await Api.post('/users', data);
-        Alert.alert(
-          'Cadastro realizado com sucesso',
-          'Você ja pode fazer login',
-        );
+        const formData = {
+          name: data.name,
+          email: data.email,
+          ...(data.old_password
+            ? {
+                old_password: data.old_password,
+                password: data.password,
+                password_confirmation: data.password_confirmation,
+              }
+            : {}),
+        };
+        const response = await Api.put('/profile', formData);
+
+        updateUser(response.data);
+
+        Alert.alert('Perfil atualizado com sucesso');
         navigation.goBack();
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           const errors = ValidationErrors(error);
+          // eslint-disable-next-line no-unused-expressions
           formRef.current?.setErrors(errors);
           return;
         }
-        Alert.alert('Erro no cadastro', 'Ocorreu um erro ao fazer o cadastro');
+        Alert.alert(
+          'Erro na atualização do perfil',
+          'Ocorreu um erro ao atualizar perfil',
+        );
       }
     },
     [navigation],
@@ -99,7 +128,7 @@ const SignUp: React.FC = () => {
             <View>
               <Title>Meu Perfil</Title>
             </View>
-            <Form ref={formRef} onSubmit={handleSignUp}>
+            <Form initialData={user} ref={formRef} onSubmit={handleSignUp}>
               <Input
                 name="name"
                 icon="user"

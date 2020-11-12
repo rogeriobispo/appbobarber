@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from 'react';
 import asyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import Api from '../services/api';
 
 interface User {
@@ -29,6 +30,7 @@ interface AuthContextState {
   loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOUt(): void;
+  updateUser(user: User): Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextState>({} as AuthContextState);
@@ -70,13 +72,27 @@ const AuthProvider: React.FC = ({ children }) => {
     setData({ token, user });
   }, []);
 
+  const updateUser = useCallback(
+    async (user: User) => {
+      await AsyncStorage.setItem('@Gobarber:user', JSON.stringify(user));
+
+      setData({
+        token: data.token,
+        user,
+      });
+    },
+    [setData, data.token],
+  );
+
   const signOUt = useCallback(async () => {
     await asyncStorage.multiRemove(['@Gobarber:token', '@Gobarber:user']);
     setData({} as AuthState);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOUt, loading }}>
+    <AuthContext.Provider
+      value={{ user: data.user, signIn, signOUt, loading, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -91,5 +107,4 @@ function useAuth(): AuthContextState {
 
   return context;
 }
-
 export { AuthProvider, useAuth };
