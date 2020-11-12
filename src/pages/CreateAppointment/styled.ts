@@ -16,6 +16,14 @@ const Container = styled.View`
   flex: 1;
 `;
 
+interface HourProps {
+  available: boolean;
+  selected: boolean;
+}
+
+interface HourTextProps {
+  selected: boolean;
+}
 const Header = styled.View`
   padding: 24px;
   padding-top: ${getStatusBarHeight(false) + 24}px;
@@ -46,7 +54,7 @@ const ProvidersListContainer = styled.View`
   height: 112px;
 `;
 
-const ProviderContainer = styled(RectButton)<ProviderContainerProps>`
+const ProviderContainer = styled(RectButton) <ProviderContainerProps>`
   background: ${props => (props.selected ? '#ff9000' : '#3e3b47')};
   flex-direction: row;
   align-items: center;
@@ -87,6 +95,63 @@ const OpenDatePickerButtonText = styled.Text`
   color: #232129;
   font-size: 24px;
 `;
+const Schedule = styled.View`
+  padding: 24px 0 16px;
+`;
+
+const Section = styled.View`
+  margin-bottom: 24px;
+`;
+
+const SectionTitle = styled.Text`
+  font-size: 18px;
+  color: #999591;
+  font-family: 'RobotoSlab-Regular';
+  margin: 0 24px 12px;
+`;
+
+const SectionContent = styled.ScrollView.attrs({
+  contentContainerStyle: { paddingHorizontal: 24 },
+  horizontal: true,
+  showsHorizontalScrollIndicator: false,
+})`
+
+
+`;
+
+const Hour = styled(RectButton) <HourProps>`
+  padding: 12px;
+background: ${props => props.selected ? '#ff9000' : '#3e3b47'};
+  border-radius: 10px;
+  margin-right: 8px;
+
+  opacity: ${(props) => (props.available ? 1 : 0.3)};
+`;
+
+const HourText = styled.Text<HourTextProps>`
+  color: ${(props) => (props.selected ? '#232129' : '#f4ede8')};
+  font-family: 'RobotSlab-Regular';
+  font-size: 16px;
+`;
+
+const Content = styled.ScrollView`
+
+`;
+
+const CreateAppointmentButton = styled(RectButton)`
+  height: 50px;
+  background: #ff9000;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 24px 24px;
+`;
+
+const CreateAppointmentButtonText = styled.Text`
+  font-family: 'RobotoSlab-Medium';
+  color: #232129;
+  font-size: 18px;
+`;
 
 export {
   Container,
@@ -103,4 +168,13 @@ export {
   Title,
   OpenDatePickerButton,
   OpenDatePickerButtonText,
+  Schedule,
+  Section,
+  SectionTitle,
+  SectionContent,
+  Hour,
+  HourText,
+  Content,
+  CreateAppointmentButton,
+  CreateAppointmentButtonText
 };
